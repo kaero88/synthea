@@ -41,7 +41,7 @@ create table concept(
 	constraint pk primary key (concept_id)
 );
 
-drop table seq_death cascade;
+drop table death cascade;
 create table death(
 	person_id int not null,
 	death_date date not null,
