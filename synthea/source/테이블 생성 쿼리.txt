@@ -1,0 +1,145 @@
+drop table condition_occurrence cascade;
+create table condition_occurrence(
+	condition_occurrence_id int not null , 
+	person_id int not null,
+	condition_concept_id int8,
+	condition_start_date date,
+	condition_start_datetime timestamp,
+	condition_end_date date,
+	condition_end_datetime timestamp,
+	condition_type_concept_id int8,
+	stop_reason	text,
+	provider_id int,
+	visit_occurrence_id int8,
+	visit_detail_id int8,
+	condition_source_value int8,
+	condition_source_concept_id int8,
+	condition_status_source_value text,
+	condition_status_concept_id text,
+	constraint pk_condition primary key (condition_occurrence_id, person_id, condition_concept_id)
+);
+
+COMMENT ON COLUMN condition_occurrence.person_id IS '환자번호';
+COMMENT ON COLUMN condition_occurrence.condition_concept_id is '진단번호';
+COMMENT ON COLUMN condition_occurrence.condition_start_date is '진단시작날짜';
+COMMENT ON COLUMN condition_occurrence.condition_start_datetime is '진단시작일자';
+COMMENT ON COLUMN condition_occurrence.condition_end_date is'진단종료날짜';
+COMMENT ON COLUMN condition_occurrence.condition_end_datetime is '진단종료일자';
+
+drop table concept cascade;
+create table concept(
+	concept_id int not null , 
+	concept_name text, 
+	domain_id text, 
+	vocabulary_id text,
+	concept_class_id text, 
+	standard_concept text, 
+	concept_code text,
+    valid_start_date varchar(10), 
+	valid_end_date varchar(10), 
+	invalid_reason text,
+	constraint pk primary key (concept_id)
+);
+
+drop table seq_death cascade;
+create table death(
+	person_id int not null,
+	death_date date not null,
+	death_datetime timestamp,
+	death_type_concept_id int8 not null,
+	cause_concept_id int8,
+	cause_source_value int8,
+	cause_source_concept_id int8,
+	constraint pk_death primary key (person_id, death_date)
+);
+
+COMMENT ON COLUMN death.person_id IS '환자번호';
+COMMENT ON COLUMN death.death_date is '사망날짜';
+COMMENT ON COLUMN death.death_datetime is '사망일자';
+COMMENT ON COLUMN death.death_type_concept_id is '사망유형번호';
+COMMENT ON COLUMN death.cause_concept_id is'사망원인번호';
+;
+	
+drop table drug_exposure cascade;
+create table drug_exposure(
+	drug_exposure_id int8 not null,
+	person_id int not null,
+	drug_concept_id int8 not null,	
+	drug_exposure_start_date date not null,
+	drug_exposure_start_datetime timestamp,
+	drug_exposure_end_date date not null,
+	drug_exposure_end_datetime timestamp,
+	verbatim_end_date date,
+	drug_type_concept_id int8,  
+	stop_reason text,
+	refills int8, 
+	quantity int4,
+	days_supply int4,
+	sig text,
+	route_concept_id int8,
+	lot_number int8,
+	provider_id int8,
+	visit_occurrence_id int8,
+	visit_detail_id int8,
+	drug_source_value int8,
+	drug_source_concept_id int8,
+	route_source_value text,
+	dose_unit_source_value text,
+	constraint pk_drug_exposure primary key (drug_exposure_id, person_id, drug_concept_id, drug_exposure_start_date)
+);
+COMMENT ON COLUMN drug_exposure.drug_exposure_id is '약물 처방 번호';
+COMMENT ON COLUMN drug_exposure.person_id IS '환자번호';
+COMMENT ON COLUMN drug_exposure.drug_concept_id is '약물 표준 번호';
+COMMENT ON COLUMN drug_exposure.drug_exposure_start_date is '처방시작날짜';
+COMMENT ON COLUMN drug_exposure.drug_exposure_start_datetime is '처방시작일자';
+COMMENT ON COLUMN drug_exposure.drug_exposure_end_date is '처방종료날짜';
+COMMENT ON COLUMN drug_exposure.drug_exposure_end_datetime is '처방종료일자';
+COMMENT ON COLUMN drug_exposure.refills is '재처방횟수';
+COMMENT ON COLUMN drug_exposure.quantity is '1회 투여량';
+COMMENT ON COLUMN drug_exposure.days_supply is '처방 일수';
+;
+
+drop table person cascade;
+create table person(
+	person_id int8 not null,
+	gender_concept_id int8 not null,
+	year_of_birth int4 not null,
+	month_of_birth int4 not null,
+	day_of_birth int4 not null,
+	birth_datetime timestamp not null,
+	race_concept_id int4 not null,
+	ethnicity_concept_id int4 not null,
+	location_id int8 ,
+	provider_id int8 ,
+	care_site_id int8 ,
+	person_source_value text not null,
+	gender_source_value char(1) not null,
+	gender_source_concept_id int8, 
+	race_source_value  text,
+	race_source_concept_id int8,
+	ethnicity_source_value text,
+	ethnicity_source_concept_id int8,
+	constraint pk_person primary key (person_id)
+);	
+
+drop table visit_occurrence cascade;
+create table visit_occurrence(
+	visit_occurrence_id int8 not null,
+	person_id int8 not null,
+	visit_concept_id int4 not null,
+	visit_start_date date not null,
+	visit_start_datetime timestamp not null,
+	visit_end_date date not null,
+	visit_end_datetime timestamp not null,
+	visit_type_concept_id int8,
+	provider_id int8,
+	care_site_id int8, 
+	visit_source_value text,
+	visit_source_concept_id int8,
+	admitting_source_concept_id int8,
+	admitting_source_value text,
+	discharge_to_concept_id  int8,
+	discharge_to_source_value text,
+	preceding_visit_occurrence_id  int8,
+	constraint pk_visit primary key (visit_occurrence_id, person_id, visit_concept_id)
+);	
